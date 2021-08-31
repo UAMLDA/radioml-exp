@@ -21,6 +21,8 @@
 
 import pickle 
 import numpy as np
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import OneHotEncoder
 
 def load_radioml(file_path): 
     """
@@ -32,21 +34,20 @@ def load_radioml(file_path):
         data = pickle.load(f, encoding='latin1') 
 
     snrs, mods = map(lambda j: sorted(list(set(map(lambda x: x[j], data.keys())))), [1,0])
-    X, lbl = [], [] 
+    X, Y, MODS, SNRS = [], [], [], [] 
     for mod in mods:
         for snr in snrs:
             X.append(data[(mod,snr)])
-            for i in range(data[(mod,snr)].shape[0]):  lbl.append((mod,snr))
-
-    idx = [i for i in range(len(X))]
-    Y = to_onehot(map(lambda x: mods.index(lbl[x][0]), idx))
+            for i in range(data[(mod,snr)].shape[0]):  Y.append(mod)
+            for i in range(data[(mod,snr)].shape[0]):  MODS.append(mod)
+            for i in range(data[(mod,snr)].shape[0]):  SNRS.append(snr)
+            
     X = np.vstack(X)
+    
+    label_encoder = LabelEncoder()
+    integer_encoded = label_encoder.fit_transform(Y)
+    onehot_encoder = OneHotEncoder(sparse=False)
+    integer_encoded = integer_encoded.reshape(len(integer_encoded), 1)
+    Y = onehot_encoder.fit_transform(integer_encoded)
+    return X, Y, SNRS, MODS
 
-    return X, Y, snrs, mods
-
-def to_onehot(yy):
-    """convert radioml to one-hot vectors 
-    """
-    yy1 = np.zeros([len(yy), max(yy)+1])
-    yy1[np.arange(len(yy)), yy] = 1
-    return yy1
