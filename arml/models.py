@@ -24,7 +24,7 @@ import numpy as np
 import tensorflow as tf 
 from tensorflow.keras import models 
 from tensorflow.keras.layers import Reshape, Dense, Dropout, Activation, Flatten
-from tensorflow.keras.layers import Convolution2D, MaxPool2D, ZeroPadding2D, Conv1D, MaxPooling1D
+from tensorflow.keras.layers import Convolution2D, MaxPool2D, ZeroPadding2D, Conv1D, MaxPooling1D, Conv2D
 
 tf.compat.v1.disable_eager_execution()
 
@@ -99,33 +99,52 @@ def vtcnn2(X:np.ndarray, Y:np.ndarray, train_param:dict):
     Parameters
     ----------
     """
-    in_shp = list(X.shape[1:])
+    N, H, W, C = train_param['NHWC']
+    
+    model = models.Sequential(name='CNN_Architecture')
 
-    model = models.Sequential()
-    model.add(Reshape([1]+in_shp, input_shape=in_shp))
+    model.add(ZeroPadding2D((0,2),data_format='channels_last'))
 
-    model.add(ZeroPadding2D((0, 2)))
-    model.add(Convolution2D(256, 1, 3, activation="relu", name="conv1"))
-    # model.add(Dropout(train_param['dropout']))
-
-    model.add(ZeroPadding2D((0, 2)))
-    model.add(Convolution2D(80, 1, 3, activation="relu", name="conv2"))
-    # model.add(Dropout(train_param['dropout']))
-
+    model.add(Conv2D(256,(1,3),activation= 'relu',data_format='channels_last',input_shape= (H,W,C),name = 'conv1'))
+    model.add(Dropout(0.5))
+    model.add(Conv2D(80,(2,3),activation= 'relu',data_format='channels_last'))
+    model.add(Conv2D(256,(1,3),activation= 'relu',data_format='channels_last'))
+    model.add(Dropout(0.5))
     model.add(Flatten())
-    model.add(Dense(256, activation='relu', name="dense1"))
-    model.add(Dropout(train_param['dropout']))
+    model.add(Dense(512,activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(256,activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(128,activation='relu'))
+    model.add(Dense(11,activation='softmax'))
+
+    # model = models.Sequential()
+    # model.add(Reshape([1]+in_shp, input_shape=in_shp))
+
+    # model.add(ZeroPadding2D((0, 2)))
+    # model.add(Convolution2D(256, 1, 3, activation="relu", name="conv1"))
+    # model.add(Dropout(train_param['dropout']))
+
+    # model.add(ZeroPadding2D((0, 2)))
+    # model.add(Convolution2D(128, 1, 3, activation="relu", name="conv2"))
+    # model.add(Dropout(train_param['dropout']))
+
+    # model.add(Flatten())
+    # model.add(Dense(256, activation='relu', name="dense1"))
+    # model.add(Dropout(train_param['dropout']))
     
-    model.add(Dense(128, activation='relu', name="dense3"))
-    model.add(Dropout(train_param['dropout']))
+    # model.add(Dense(128, activation='relu', name="dense3"))
+    # model.add(Dropout(train_param['dropout']))
     
-    model.add(Dense(Y.shape[1], name="dense2" ))
-    model.add(Activation('softmax'))
-    model.add(Reshape([Y.shape[1]]))
+    # model.add(Dense(Y.shape[1], name="dense2" ))
+    # model.add(Activation('softmax'))
+    # model.add(Reshape([Y.shape[1]]))
 
     model.compile(loss='categorical_crossentropy', optimizer='adam')
+    model.build(input_shape = (None,H,W,C))
 
-    Nval = np.int16(train_param['val_split']*len(Y))
+
+    Nval = int(train_param['val_split']*len(Y))
     Xtr, Xval, Ytr, Yval = X[:Nval], X[Nval:], Y[:Nval], Y[Nval:]
 
     history = model.fit(Xtr, Ytr,
@@ -133,8 +152,9 @@ def vtcnn2(X:np.ndarray, Y:np.ndarray, train_param:dict):
         epochs=train_param['nb_epoch'],
         verbose=train_param['verbose'],
         validation_data=(Xval, Yval), 
+        use_multiprocessing=True,
         callbacks = [
-        tf.keras.callbacks.ModelCheckpoint(train_param['file_path'], monitor='val_loss', \
+        tf.keras.callbacks.ModelCheckpoint(train_param['file_path'], monitor='val_accuracy', \
             verbose=0, save_best_only=True, mode='auto'),
         tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, verbose=0, mode='auto')
     ])

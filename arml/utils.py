@@ -64,7 +64,7 @@ def load_radioml(file_path:str, shuffle:bool=True):
 
 
 def prediction_stats(Y, Yhat):
-    """
+    """prediction statistics
     """
     auc = roc_auc_score(Y, Yhat)
     acc = (np.argmax(Y, axis=1) == np.argmax(Yhat, axis=1)).sum()/len(Y)

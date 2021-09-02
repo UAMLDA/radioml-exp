@@ -29,15 +29,20 @@ from sklearn.model_selection import KFold
 def basic_radioml(file_path:str, n_runs:int=5, verbose:bool=True): 
     """
     """
-    train_params = {'dropout': 0.2, 
-                    'val_split': 0.2, 
-                    'batch_size': 128, 
+    X, Y, snrs, mods, encoder = load_radioml(file_path=file_path, shuffle=True)
+    C = 1
+    N, H, W = X.shape
+    X = X.reshape(N, H, W, C)
+
+    train_params = {'dropout': 0.5, 
+                    'val_split': 0.9, 
+                    'batch_size': 256, 
                     'nb_epoch': 30, 
-                    'verbose': 0, 
+                    'verbose': 1, 
+                    'NHWC':[N, H, W, C],
                     'file_path': 'convmodrecnets_CNN2_0.5.wts.h5'}
     
-    X, Y, snrs, mods, encoder = load_radioml(file_path=file_path, shuffle=True)
-    
+
     results_accs, results_aucs, results_ppls = {}, {}, {}
     
     kf = KFold(n_splits=n_runs)
