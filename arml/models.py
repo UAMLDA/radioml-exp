@@ -103,20 +103,39 @@ def vtcnn2(X:np.ndarray, Y:np.ndarray, train_param:dict):
     
     model = models.Sequential(name='CNN_Architecture')
 
-    model.add(ZeroPadding2D((0,2),data_format='channels_last'))
+    model.add(ZeroPadding2D((0,2),
+              data_format='channels_last'))
 
-    model.add(Conv2D(256,(1,3),activation= 'relu',data_format='channels_last',input_shape= (H,W,C),name = 'conv1'))
+    model.add(Conv2D(256,(1,3),
+              activation= 'relu',
+              data_format='channels_last',
+              input_shape= (H,W,C),
+              name = 'ConvLayer1'))
     model.add(Dropout(0.5))
-    model.add(Conv2D(80,(2,3),activation= 'relu',data_format='channels_last'))
-    model.add(Conv2D(256,(1,3),activation= 'relu',data_format='channels_last'))
+    model.add(Conv2D(80,(2,3),
+              activation= 'relu',
+              data_format='channels_last', 
+              name='ConvLayer2'))
+    model.add(Conv2D(256,(1,3),
+              activation= 'relu',
+              data_format='channels_last',
+              name='ConvLayer3'))
     model.add(Dropout(0.5))
     model.add(Flatten())
-    model.add(Dense(512,activation='relu'))
+    model.add(Dense(512,
+              activation='relu', 
+              name='DenseLayer1'))
     model.add(Dropout(0.5))
-    model.add(Dense(256,activation='relu'))
+    model.add(Dense(256,
+              activation='relu', 
+              name='DenseLayer2'))
     model.add(Dropout(0.5))
-    model.add(Dense(128,activation='relu'))
-    model.add(Dense(11,activation='softmax'))
+    model.add(Dense(128,
+              activation='relu', 
+              name='DenseLayer3'))
+    model.add(Dense(11,
+              activation='softmax', 
+              name='Output'))
 
     # model = models.Sequential()
     # model.add(Reshape([1]+in_shp, input_shape=in_shp))
@@ -151,14 +170,14 @@ def vtcnn2(X:np.ndarray, Y:np.ndarray, train_param:dict):
         batch_size=train_param['batch_size'],
         epochs=train_param['nb_epoch'],
         verbose=train_param['verbose'],
-        validation_data=(Xval, Yval), 
-        use_multiprocessing=True,
-        callbacks = [
-        tf.keras.callbacks.ModelCheckpoint(train_param['file_path'], monitor='val_accuracy', \
-            verbose=0, save_best_only=True, mode='auto'),
-        tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, verbose=0, mode='auto')
-    ])
-    model.load_weights(train_param['file_path'])
+        validation_data=(Xval, Yval))#, 
+        #use_multiprocessing=True,
+        #callbacks = [
+        #tf.keras.callbacks.ModelCheckpoint(train_param['file_path'], monitor='val_accuracy', \
+        #    verbose=0, save_best_only=True, mode='auto'),
+        #tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, verbose=0, mode='auto')
+    #])
+    # model.load_weights(train_param['file_path'])
 
     return model, history 
 

@@ -56,6 +56,7 @@ def load_radioml(file_path:str, shuffle:bool=True):
 
     SNRS, MODS = np.array(SNRS), np.array(MODS)
 
+    # shuffle the data?
     if shuffle: 
         i = np.random.permutation(X.shape[0])
         X, Y, MODS, SNRS = X[i], Y[i], MODS[i], SNRS[i]
@@ -65,6 +66,17 @@ def load_radioml(file_path:str, shuffle:bool=True):
 
 def prediction_stats(Y, Yhat):
     """prediction statistics
+
+    Parameters 
+    ----------
+    Y : np.ndarray 
+        Ground truth labels 
+    Yhat : np.ndarray 
+        Predicted probabilities
+
+    Returns
+    -------
+    (auc, acc, ppl) : tuple(float, float, float) 
     """
     auc = roc_auc_score(Y, Yhat)
     acc = (np.argmax(Y, axis=1) == np.argmax(Yhat, axis=1)).sum()/len(Y)

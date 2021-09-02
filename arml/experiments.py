@@ -36,8 +36,8 @@ def basic_radioml(file_path:str, n_runs:int=5, verbose:bool=True):
 
     train_params = {'dropout': 0.5, 
                     'val_split': 0.9, 
-                    'batch_size': 256, 
-                    'nb_epoch': 30, 
+                    'batch_size': 128, 
+                    'nb_epoch': 10, 
                     'verbose': 1, 
                     'NHWC':[N, H, W, C],
                     'file_path': 'convmodrecnets_CNN2_0.5.wts.h5'}
