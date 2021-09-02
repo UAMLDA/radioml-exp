@@ -21,13 +21,18 @@
 
 import pickle 
 import numpy as np
-from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
+from sklearn.metrics import roc_auc_score
 
-def load_radioml(file_path): 
-    """
+def load_radioml(file_path:str, shuffle:bool=True): 
+    """load the radioml dataset from a pickle file
+
     Parameters
     ----------
+    file_path : str 
+        File path to the radioml pickle file 
+    shuffle : bool 
+        Permutate the data? [default=True]
     """
 
     with open(file_path, 'rb') as f:
@@ -43,11 +48,25 @@ def load_radioml(file_path):
             for i in range(data[(mod,snr)].shape[0]):  SNRS.append(snr)
             
     X = np.vstack(X)
-    
-    label_encoder = LabelEncoder()
-    integer_encoded = label_encoder.fit_transform(Y)
-    onehot_encoder = OneHotEncoder(sparse=False)
-    integer_encoded = integer_encoded.reshape(len(integer_encoded), 1)
-    Y = onehot_encoder.fit_transform(integer_encoded)
-    return X, Y, SNRS, MODS
+    Y = np.array(Y)
 
+    # convert the MODS to the labels using one hot encoding
+    encoder = OneHotEncoder(sparse=False).fit(Y.reshape(-1,1))
+    Y = encoder.transform(Y.reshape(-1,1))
+
+    SNRS, MODS = np.array(SNRS), np.array(MODS)
+
+    if shuffle: 
+        i = np.random.permutation(X.shape[0])
+        X, Y, MODS, SNRS = X[i], Y[i], MODS[i], SNRS[i]
+
+    return X, Y, SNRS, MODS, encoder
+
+
+def prediction_stats(Y, Yhat):
+    """
+    """
+    auc = roc_auc_score(Y, Yhat)
+    acc = (np.argmax(Y, axis=1) == np.argmax(Yhat, axis=1)).sum()/len(Y)
+    ppl = 2**(-(Y*Yhat).sum(axis=1).mean())
+    return auc, acc, ppl 
