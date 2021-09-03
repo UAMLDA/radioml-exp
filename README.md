@@ -1,6 +1,10 @@
 # Adversarial Analysis of the RadioML Dataset
 
-still in development. 
+still in development.
+
+Couple of notes: 
+* Training takes a few hours for the basic experiment and much longer even when using a GPU. Running the experiment with the adversarial data generation will cause a time-out with Google Colab. I receommend running the code on a machine with a dedicated GPU or in the cloud. 
+* The logger class in `arml/performance.py` is used to store all of the performances. There might be a better way to save the results moving forward. 
 
 # Viewing the Model Training Performances 
 
