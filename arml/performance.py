@@ -46,7 +46,9 @@ class PerfLogger():
     params : dict 
         Training parameters of the experiment 
     count : int 
-        Number of runs performed in the experiment 
+        Number of runs performed in the experiment
+    overall_accuracy : float 
+        Overall accuracy across all SNRs  
 
     Methods 
     -------
@@ -113,8 +115,40 @@ class PerfLogger():
         self.aucs /= self.count
         self.overall_accuracy = self.number_correct/self.number_instances_processed
 
+
 class AdversarialPerfLogger(): 
-    """
+    """class to log the adversarial experiments 
+    
+    Attributes 
+    ----------
+    snrs : np.ndarray
+        Array of SNRS
+    modes : np.ndarray
+        Array of modulation types 
+    n_classes : np.ndarray
+        Number of modulation types 
+    n_snrs : np.ndarray
+        Number of SNRS 
+    accuracy, accuracy_fgsm, accuracy_deep, accuracy_pgd : np.ndarray
+        Arracy of accuracy 
+    perplexity, perplexity_fgsm, perplexity_deep, perplexity_pgd: np.ndarray
+        Arracy of perplexity 
+    aucs, aucs_fgsm, aucs_deep, aucs_pgd : np.ndarray
+        Arracy of AUCs 
+    name : str 
+        Name of the logger
+    params : dict 
+        Training parameters of the experiment 
+    count : int 
+        Number of runs performed in the experiment 
+
+    Methods 
+    -------
+    add_scores(Y, Yhat, Yhat_fgsm, Yhat_deep, Yhat_pgd, snr)
+        Adds the performance scores from Y and Yhat for the current SNR.
+    scale()
+        Scale the performances by the number of runs. The class keeps track 
+        of the number of runs 
     """
     
     def __init__(self, name:str, snrs:np.ndarray, mods:np.ndarray, params:dict): 

@@ -84,6 +84,7 @@ def experiment_adversarial(file_path:str,
                            attack_params:dict={},
                            train_params:dict={}, 
                            train_adversary_params:dict={}, 
+                           logger_name:str='aml_radioml_vtcnn2_vtcnn2_scenario_A',
                            output_path:str='outputs/aml_vtcnn2_vtcnn2_scenario_A_radioml.pkl'): 
     """
     """
@@ -116,7 +117,7 @@ def experiment_adversarial(file_path:str,
         attack_params = {'type': 'FastGradientMethod', 'eps':.15}
     
     # initialize the performances to empty 
-    result_logger = AdversarialPerfLogger(name='basic_radioml', 
+    result_logger = AdversarialPerfLogger(name=logger_name, 
                                           snrs=snrs, 
                                           mods=mods, 
                                           params=[train_params, train_adversary_params])
@@ -149,10 +150,11 @@ def experiment_adversarial(file_path:str,
             Yhat_fgsm = model.predict(Xfgsm[snrs_te == snr])
             Yhat_deep = model.predict(Xdeep[snrs_te == snr])
             Yhat_pgd = model.predict(Xpgd[snrs_te == snr])
-            result_logger.add_scores(Yte[snrs_te==snr], Yhat, Yhat_fgsm, Yhat_deep, Yhat_pgd, snr)
+            result_logger.add_scores(Yte[snrs_te==snr], 
+                                     Yhat, Yhat_fgsm, Yhat_deep, Yhat_pgd, snr)
     
     result_logger.finalize()
 
     # save the results to a pickle file 
-    results = {'result_logger':result_logger}
+    results = {'result_logger': result_logger}
     pickle.dump(results, open(output_path, 'wb'))
