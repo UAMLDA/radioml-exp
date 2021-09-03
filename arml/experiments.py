@@ -19,14 +19,20 @@
 # OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR 
 # OTHER DEALINGS IN THE SOFTWARE.
 
+import pickle 
 import numpy as np 
 
 from .utils import load_radioml, prediction_stats
-from .models import vtcnn2, gvn_00
+from .models import vtcnn2
+from .performance import PerfLogger
 
 from sklearn.model_selection import KFold
 
-def basic_radioml(file_path:str, n_runs:int=5, verbose:bool=True): 
+def basic_radioml(file_path:str, 
+                  n_runs:int=5, 
+                  verbose:int=1, 
+                  train_params:dict={}, 
+                  output_path:str='outputs/basic_radioml.pkl'): 
     """
     """
     X, Y, snrs, mods, encoder = load_radioml(file_path=file_path, shuffle=True)
@@ -34,28 +40,35 @@ def basic_radioml(file_path:str, n_runs:int=5, verbose:bool=True):
     N, H, W = X.shape
     X = X.reshape(N, H, W, C)
 
-    train_params = {'dropout': 0.5, 
-                    'val_split': 0.9, 
-                    'batch_size': 128, 
-                    'nb_epoch': 10, 
-                    'verbose': 1, 
-                    'NHWC':[N, H, W, C],
-                    'file_path': 'convmodrecnets_CNN2_0.5.wts.h5'}
+    if len(train_params) == 0:
+        train_params = {'dropout': 0.5, 
+                        'val_split': 0.9, 
+                        'batch_size': 1024, 
+                        'nb_epoch': 50, 
+                        'verbose': verbose, 
+                        'NHWC': [N, H, W, C],
+                        'file_path': 'convmodrecnets_CNN2_0.5.wts.h5'}
     
-
+    # initialize the performances to empty 
     results_accs, results_aucs, results_ppls = {}, {}, {}
+    result_logger = PerfLogger(name='basic_radioml', snrs=snrs, mods=mods, params=train_params)
     
     kf = KFold(n_splits=n_runs)
     
     for train_index, test_index in kf.split(X): 
-        Xtr, Ytr, Xte, Yte = X[train_index], Y[train_index], X[test_index], Y[test_index]
-        mods_tr, snrs_tr, mods_te, snrs_te = mods[train_index], snrs[train_index], mods[test_index], snrs[test_index]
+        # split out the training and testing data. do the sample for the modulations and snrs
+        Xtr, Ytr, Xte, Yte, snrs_te = X[train_index], Y[train_index], X[test_index], Y[test_index], snrs[test_index]
 
+        # train the model 
         model, history = vtcnn2(X=Xtr, Y=Ytr, train_param=train_params)
         
+        # for each of the snrs -> grab all of the data for that snr, which should have all of
+        # the classes then evaluate the model on the data for the snr under test. store the 
+        # aucs, accs, and ppls in a dictionary 
         for snr in np.unique(snrs_te): 
             X_c_snr = Xte[snrs_te == snr]
             Yhat = model.predict(X_c_snr) 
+            result_logger.add_scores(Y, Yhat, snr)
             auc, acc, ppl = prediction_stats(Yte[snrs_te==snr], Yhat)
             if snr in results_accs:
                 results_aucs[snr] += auc
@@ -64,6 +77,7 @@ def basic_radioml(file_path:str, n_runs:int=5, verbose:bool=True):
             else:
                 results_aucs[snr], results_accs[snr], results_ppls[snr] = auc, acc, ppl
     
+    # avergae the results over the number of runs. 
     for snr in np.unique(snrs): 
         results_aucs[snr] /= n_runs
         results_accs[snr] /= n_runs
@@ -71,11 +85,11 @@ def basic_radioml(file_path:str, n_runs:int=5, verbose:bool=True):
     
     print(results_accs)
     print(results_aucs)
+    result_logger.scale()
 
-        # Yhat = model.predict(Xte)
-        # auc, acc, ppl = prediction_stats(Yte, Yhat)
-        # print(''.join(['ACC: ', str(acc)]))
-        # print(''.join(['AUC: ', str(auc)]))
-        # print(''.join(['PPL: ', str(ppl)]))
-        # print(' ')
-    return None 
+    # save the results to a pickle file 
+    results = {'results_aucs':results_aucs, 
+               'results_acc':results_accs, 
+               'results_ppl':results_ppls}
+    pickle.dump(results, open(output_path, 'wb'))
+
