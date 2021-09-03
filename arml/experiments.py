@@ -80,10 +80,13 @@ def experiment_basic_radioml(file_path:str,
 def experiment_adversarial(file_path:str,
                            n_runs:int=5, 
                            verbose:int=1, 
+                           scenario:str='A', 
                            attack_params:dict={},
                            train_params:dict={}, 
                            train_adversary_params:dict={}, 
-                           output_path:str='outputs/basic_radioml.pkl'): 
+                           output_path:str='outputs/aml_vtcnn2_vtcnn2_scenario_A_radioml.pkl'): 
+    """
+    """
 
     X, Y, snrs, mods, encoder = load_radioml(file_path=file_path, shuffle=True)
     C = 1
@@ -124,13 +127,14 @@ def experiment_adversarial(file_path:str,
         # split out the training and testing data. do the sample for the modulations and snrs
         Xtr, Ytr, Xte, Yte, snrs_te = X[train_index], Y[train_index], X[test_index], Y[test_index], snrs[test_index]
 
-        # sample adversarial training data 
-        Ntr = len(Xtr)
-        sample_indices = np.random.randint(0, Ntr, Ntr)
-        
+        if scenario == 'A': 
+            # sample adversarial training data 
+            Ntr = len(Xtr)
+            sample_indices = np.random.randint(0, Ntr, Ntr)        
 
-        # train the model
-        model_aml, _ = nn_model(X=Xtr[sample_indices], Y=Ytr[sample_indices], train_param=train_adversary_params) 
+            # train the model
+            model_aml, _ = nn_model(X=Xtr[sample_indices], Y=Ytr[sample_indices], train_param=train_adversary_params) 
+        
         model, _ = nn_model(X=Xtr, Y=Ytr, train_param=train_params)
         
         Xfgsm = generate_aml_data(model_aml, Xte, Yte, {'type': 'FastGradientMethod', 'eps': 0.15})
