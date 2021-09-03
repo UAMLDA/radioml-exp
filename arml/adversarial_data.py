@@ -28,16 +28,34 @@ from art.attacks.evasion.projected_gradient_descent.projected_gradient_descent i
 
 def generate_aml_data(model, X:np.ndarry, Y:np.ndarray, attack_params:dict):
     """generate the adversarial evasion data 
+
+    Parameters 
+    ----------
+    model : tf sequential model 
+        Trained model 
+    X : np.ndarray 
+        Data to generate attacks 
+    Y : np.ndarray 
+        Labels for the attack data [not used] 
+    attack_params : dict 
+        Attack dictionary parameters 
+            FastGradientMethod: {'type': 'FastGradientMethod', 'eps': 0.15}
+            DeepFool: {'type': 'DeepFool'}
+            ProjectedGradientDescent: {'type': 'ProjectedGradientDescent', 'eps': 1.0, 'eps_step':0.1} 
     """
 
     classifier = KerasClassifier(model=model, clip_values=(-5.0, 5.0), use_logits=False)
 
     if attack_params['type'] == 'FastGradientMethod': 
-        attack = FastGradientMethod(estimator=classifier, eps=attack_params['eps'])
+        attack = FastGradientMethod(estimator=classifier, 
+                                    eps=attack_params['eps'])
     elif attack_params['type'] == 'DeepFool': 
         attack = DeepFool(classifier, verbose=False)
     elif attack_params['type'] == 'ProjectedGradientDescent': 
-        attack = ProjectedGradientDescent(classifier, eps=attack_params['eps'], eps_step=attack_params['eps_step'], verbose=False)
+        attack = ProjectedGradientDescent(classifier, 
+                                          eps=attack_params['eps'], 
+                                          eps_step=attack_params['eps_step'], 
+                                          verbose=False)
     else: 
         raise(ValueError(''.join(['Unknown attack ', attack_params['type']])))
 

@@ -152,7 +152,18 @@ class AdversarialPerfLogger():
     """
     
     def __init__(self, name:str, snrs:np.ndarray, mods:np.ndarray, params:dict): 
-        """
+        """initialize the object 
+
+        Parameters
+        ----------
+        name : str 
+            Name of the logger 
+        snrs : np.ndarray 
+            Array of SNRs 
+        mods : np.ndarray 
+            Array of MODs 
+        params : dict 
+            Dictionary of training parameters 
         """
         self.snrs = np.sort(snrs) 
         self.mods = mods
@@ -180,7 +191,16 @@ class AdversarialPerfLogger():
         self.count = 0
     
     def add_scores(self, Y, Yhat, Yhat_fgsm, Yhat_deep, Yhat_pgd, snr): 
-        """
+        """add the current scores to the logger 
+
+        Parameters
+        ----------
+        Y : np.ndarray 
+            Ground truth labels 
+        Yhat, Yhat_fgsm, Yhat_deep, Yhat_pgd : np.ndarray 
+            Predictions 
+        snr : int 
+            SNR level from the predictions 
         """
         auc, acc, ppl = prediction_stats(Y, Yhat)
         self.accuracy[self.snrs == snr] += acc
@@ -205,7 +225,7 @@ class AdversarialPerfLogger():
         self.count += 1
 
     def finalize(self): 
-        """
+        """scale the scores based on the number of runs performed
         """
         self.accuracy /= self.count
         self.perplxity /= self.count 
