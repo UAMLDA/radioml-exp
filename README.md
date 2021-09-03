@@ -1,6 +1,5 @@
 # Adversarial Analysis of the RadioML Dataset
 
-still in development.
 
 Couple of notes: 
 * Training takes a few hours for the basic experiment and much longer even when using a GPU. Running the experiment with the adversarial data generation will cause a time-out with Google Colab. I receommend running the code on a machine with a dedicated GPU or in the cloud. 
