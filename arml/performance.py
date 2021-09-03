@@ -59,6 +59,17 @@ class PerfLogger():
 
     def __init__(self, name, snrs, mods, params): 
         """initialize the object 
+
+        Parameters
+        ----------
+        name : str 
+            Name of the logger 
+        snrs : np.ndarray 
+            Array of SNRs 
+        mods : np.ndarray 
+            Array of MODs 
+        params : dict 
+            Dictionary of training parameters 
         """
         self.snrs = np.sort(snrs) 
         self.mods = mods
@@ -70,19 +81,52 @@ class PerfLogger():
         self.name = name 
         self.params = params
         self.count = 0
+        self.number_correct = 0. 
+        self.number_instances_processed = 0.
     
     def add_scores(self, Y, Yhat, snr): 
         """add the current scores to the logger 
+
+        Parameters
+        ----------
+        Y : np.ndarray 
+            Ground truth labels 
+        Yhat : np.ndarray 
+            Predictions 
+        snr : int 
+            SNR level from the predictions 
         """
-        auc, acc, ppl = prediction_stats(Yhat, Y)
+        auc, acc, ppl = prediction_stats(Y, Yhat)
         self.accuracy[self.snrs == snr] += acc
         self.perplexity[self.snrs == snr] += ppl
         self.aucs[self.snrs == snr] += auc
         self.count += 1
+        self.number_instances_processed += len(Y)
+        self.number_correct += len(Y)*acc
     
-    def scale(self):
+    def finalize(self):
         """scale the scores based on the number of runs performed
         """
         self.accuracy /= self.count
         self.perplxity /= self.count 
         self.aucs /= self.count
+        self.overall_accuracy = self.number_correct/self.number_instances_processed
+
+class AdversarialPerfLogger(): 
+    """
+    """
+    
+    def __init__(self): 
+        """
+        """
+        return None 
+    
+    def add_scores(self): 
+        """
+        """
+        return None 
+
+    def finalize(self): 
+        """
+        """
+        return None

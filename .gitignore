@@ -1,3 +1,6 @@
 # files 
 *.pyc
 data/RML2016.10a_dict.pkl
+
+# folders 
+logs/

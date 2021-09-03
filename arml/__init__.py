@@ -20,8 +20,8 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 
 
-from .experiments import basic_radioml
+from .experiments import experiment_basic_radioml
 
 
-__all__ = ['basic_radioml']
+__all__ = ['experiment_basic_radioml']
 

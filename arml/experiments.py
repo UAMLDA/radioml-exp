@@ -69,29 +69,12 @@ def experiment_basic_radioml(file_path:str,
         for snr in np.unique(snrs_te): 
             X_c_snr = Xte[snrs_te == snr]
             Yhat = model.predict(X_c_snr) 
-            result_logger.add_scores(Y, Yhat, snr)
-            auc, acc, ppl = prediction_stats(Yte[snrs_te==snr], Yhat)
-            if snr in results_accs:
-                results_aucs[snr] += auc
-                results_accs[snr] += acc
-                results_ppls[snr] += ppl
-            else:
-                results_aucs[snr], results_accs[snr], results_ppls[snr] = auc, acc, ppl
+            result_logger.add_scores(Yte[snrs_te==snr], Yhat, snr)
     
-    # avergae the results over the number of runs. 
-    for snr in np.unique(snrs): 
-        results_aucs[snr] /= n_runs
-        results_accs[snr] /= n_runs
-        results_ppls[snr] /= n_runs
-    
-    print(results_accs)
-    print(results_aucs)
-    result_logger.scale()
+    result_logger.finalize()
 
     # save the results to a pickle file 
-    results = {'results_aucs':results_aucs, 
-               'results_acc':results_accs, 
-               'results_ppl':results_ppls}
+    results = {'result_logger':result_logger}
     pickle.dump(results, open(output_path, 'wb'))
 
 def experiment_adversarial(): 
