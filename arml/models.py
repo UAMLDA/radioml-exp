@@ -28,6 +28,23 @@ from tensorflow.keras.layers import ZeroPadding2D, Conv2D
 
 tf.compat.v1.disable_eager_execution()
 
+def nn_model(X:np.ndarray, Y:np.ndarray, train_param:dict): 
+    """generate a neural network 
+
+    Parameters
+    ----------
+    X : np.ndarray 
+        Training dataset (N, H, W, C)
+    Y : np.ndarray 
+        Training labels 
+    train_param : dict
+    """
+    if train_param['type'] == 'vtcnn2': 
+        model, history = vtcnn2(X=X, Y=Y, train_param=train_param)
+    else: 
+        raise(NotImplementedError(''.join([train_param['type'], 'is not implemented.'])))
+    return model, history
+
 def vtcnn2(X:np.ndarray, Y:np.ndarray, train_param:dict): 
     """implementation of the vtcnn2
     
@@ -38,7 +55,6 @@ def vtcnn2(X:np.ndarray, Y:np.ndarray, train_param:dict):
     Y : np.ndarray 
         Training labels 
     train_param : dict 
-
     """
     _, H, W, C = train_param['NHWC']
     

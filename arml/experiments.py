@@ -23,16 +23,16 @@ import pickle
 import numpy as np 
 
 from .utils import load_radioml, prediction_stats
-from .models import vtcnn2
+from .models import nn_model
 from .performance import PerfLogger
 
 from sklearn.model_selection import KFold
 
-def basic_radioml(file_path:str, 
-                  n_runs:int=5, 
-                  verbose:int=1, 
-                  train_params:dict={}, 
-                  output_path:str='outputs/basic_radioml.pkl'): 
+def experiment_basic_radioml(file_path:str, 
+                             n_runs:int=5, 
+                             verbose:int=1, 
+                             train_params:dict={}, 
+                             output_path:str='outputs/basic_radioml.pkl'): 
     """
     """
     X, Y, snrs, mods, encoder = load_radioml(file_path=file_path, shuffle=True)
@@ -41,7 +41,8 @@ def basic_radioml(file_path:str,
     X = X.reshape(N, H, W, C)
 
     if len(train_params) == 0:
-        train_params = {'dropout': 0.5, 
+        train_params = {'type': 'vtcnn2', 
+                        'dropout': 0.5, 
                         'val_split': 0.9, 
                         'batch_size': 1024, 
                         'nb_epoch': 50, 
@@ -60,7 +61,7 @@ def basic_radioml(file_path:str,
         Xtr, Ytr, Xte, Yte, snrs_te = X[train_index], Y[train_index], X[test_index], Y[test_index], snrs[test_index]
 
         # train the model 
-        model, history = vtcnn2(X=Xtr, Y=Ytr, train_param=train_params)
+        model, history = nn_model(X=Xtr, Y=Ytr, train_param=train_params)
         
         # for each of the snrs -> grab all of the data for that snr, which should have all of
         # the classes then evaluate the model on the data for the snr under test. store the 
@@ -93,3 +94,5 @@ def basic_radioml(file_path:str,
                'results_ppl':results_ppls}
     pickle.dump(results, open(output_path, 'wb'))
 
+def experiment_adversarial(): 
+    return None 
