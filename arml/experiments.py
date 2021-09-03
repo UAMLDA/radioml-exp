@@ -22,9 +22,10 @@
 import pickle 
 import numpy as np 
 
-from .utils import load_radioml, prediction_stats
+from .utils import load_radioml
 from .models import nn_model
-from .performance import PerfLogger
+from .performance import PerfLogger, AdversarialPerfLogger
+from .adversarial_data import generate_aml_data
 
 from sklearn.model_selection import KFold
 
@@ -51,7 +52,6 @@ def experiment_basic_radioml(file_path:str,
                         'file_path': 'convmodrecnets_CNN2_0.5.wts.h5'}
     
     # initialize the performances to empty 
-    results_accs, results_aucs, results_ppls = {}, {}, {}
     result_logger = PerfLogger(name='basic_radioml', snrs=snrs, mods=mods, params=train_params)
     
     kf = KFold(n_splits=n_runs)
@@ -77,5 +77,78 @@ def experiment_basic_radioml(file_path:str,
     results = {'result_logger':result_logger}
     pickle.dump(results, open(output_path, 'wb'))
 
-def experiment_adversarial(): 
-    return None 
+def experiment_adversarial(file_path:str,
+                           n_runs:int=5, 
+                           verbose:int=1, 
+                           attack_params:dict={},
+                           train_params:dict={}, 
+                           train_adversary_params:dict={}, 
+                           output_path:str='outputs/basic_radioml.pkl'): 
+
+    X, Y, snrs, mods, encoder = load_radioml(file_path=file_path, shuffle=True)
+    C = 1
+    N, H, W = X.shape
+    X = X.reshape(N, H, W, C)
+
+    if len(train_params) == 0:
+        train_params = {'type': 'vtcnn2', 
+                        'dropout': 0.5, 
+                        'val_split': 0.9, 
+                        'batch_size': 1024, 
+                        'nb_epoch': 50, 
+                        'verbose': verbose, 
+                        'NHWC': [N, H, W, C],
+                        'file_path': 'convmodrecnets_CNN2_0.5.wts.h5'}
+    
+    if len(train_adversary_params) == 0:
+        train_adversary_params = {'type': 'vtcnn2', 
+                                  'dropout': 0.5, 
+                                  'val_split': 0.9, 
+                                  'batch_size': 1024, 
+                                  'nb_epoch': 50, 
+                                  'verbose': verbose, 
+                                  'NHWC': [N, H, W, C],
+                                  'file_path': 'convmodrecnets_adversary_CNN2_0.5.wts.h5'}
+    if len(attack_params) == 0: 
+        attack_params = {'type': 'FastGradientMethod', 'eps':.15}
+    
+    # initialize the performances to empty 
+    result_logger = AdversarialPerfLogger(name='basic_radioml', 
+                                          snrs=snrs, 
+                                          mods=mods, 
+                                          params=[train_params, train_adversary_params])
+    
+    kf = KFold(n_splits=n_runs)
+    
+    for train_index, test_index in kf.split(X): 
+        # split out the training and testing data. do the sample for the modulations and snrs
+        Xtr, Ytr, Xte, Yte, snrs_te = X[train_index], Y[train_index], X[test_index], Y[test_index], snrs[test_index]
+
+        # sample adversarial training data 
+        Ntr = len(Xtr)
+        sample_indices = np.random.randint(0, Ntr, Ntr)
+        
+
+        # train the model
+        model_aml, _ = nn_model(X=Xtr[sample_indices], Y=Ytr[sample_indices], train_param=train_adversary_params) 
+        model, _ = nn_model(X=Xtr, Y=Ytr, train_param=train_params)
+        
+        Xfgsm = generate_aml_data(model_aml, Xte, Yte, {'type': 'FastGradientMethod', 'eps': 0.15})
+        Xdeep = generate_aml_data(model_aml, Xte, Yte, {'type': 'DeepFool'})
+        Xpgd = generate_aml_data(model_aml, Xte, Yte, {'type': 'ProjectedGradientDescent', 'eps': 1.0, 'eps_step':0.1})
+
+        # for each of the snrs -> grab all of the data for that snr, which should have all of
+        # the classes then evaluate the model on the data for the snr under test. store the 
+        # aucs, accs, and ppls in a dictionary 
+        for snr in np.unique(snrs_te): 
+            Yhat = model.predict(Xte[snrs_te == snr]) 
+            Yhat_fgsm = model.predict(Xfgsm[snrs_te == snr])
+            Yhat_deep = model.predict(Xdeep[snrs_te == snr])
+            Yhat_pgd = model.predict(Xpgd[snrs_te == snr])
+            result_logger.add_scores(Yte[snrs_te==snr], Yhat, Yhat_fgsm, Yhat_deep, Yhat_pgd, snr)
+    
+    result_logger.finalize()
+
+    # save the results to a pickle file 
+    results = {'result_logger':result_logger}
+    pickle.dump(results, open(output_path, 'wb'))
