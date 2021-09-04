@@ -21,7 +21,10 @@
 
 
 from .experiments import experiment_basic_radioml
+from .experiments import experiment_adversarial
 
-
-__all__ = ['experiment_basic_radioml']
+__all__ = [
+            'experiment_basic_radioml', 
+            'experiment_adversarial'
+           ]
 

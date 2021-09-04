@@ -111,7 +111,7 @@ class PerfLogger():
         """scale the scores based on the number of runs performed
         """
         self.accuracy /= self.count
-        self.perplxity /= self.count 
+        self.perplexity /= self.count 
         self.aucs /= self.count
         self.overall_accuracy = self.number_correct/self.number_instances_processed
 
@@ -228,17 +228,17 @@ class AdversarialPerfLogger():
         """scale the scores based on the number of runs performed
         """
         self.accuracy /= self.count
-        self.perplxity /= self.count 
+        self.perplexity /= self.count 
         self.aucs /= self.count
 
         self.accuracy_fgsm /= self.count
-        self.perplxity_fgsm /= self.count 
+        self.perplexity_fgsm /= self.count 
         self.aucs_fgsm /= self.count
 
         self.accuracy_deep /= self.count
-        self.perplxity_deep /= self.count 
+        self.perplexity_deep /= self.count 
         self.aucs_deep /= self.count
 
         self.accuracy_pgd /= self.count
-        self.perplxity_pgd /= self.count 
+        self.perplexity_pgd /= self.count 
         self.aucs_pgd /= self.count
