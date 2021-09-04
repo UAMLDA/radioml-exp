@@ -26,7 +26,7 @@ from art.attacks.evasion.deepfool import DeepFool
 from art.attacks.evasion.projected_gradient_descent.projected_gradient_descent import ProjectedGradientDescent
 
 
-def generate_aml_data(model, X:np.ndarry, Y:np.ndarray, attack_params:dict):
+def generate_aml_data(model, X:np.ndarray, Y:np.ndarray, attack_params:dict):
     """generate the adversarial evasion data 
 
     Parameters 
