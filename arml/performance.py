@@ -103,7 +103,7 @@ class PerfLogger():
         self.accuracy[self.snrs == snr] += acc
         self.perplexity[self.snrs == snr] += ppl
         self.aucs[self.snrs == snr] += auc
-        self.count += 1
+        self.count[self.snrs == snr] += 1
         self.number_instances_processed += len(Y)
         self.number_correct += len(Y)*acc
     
