@@ -140,7 +140,10 @@ def experiment_adversarial(file_path:str,
         
         Xfgsm = generate_aml_data(model_aml, Xte, Yte, {'type': 'FastGradientMethod', 'eps': 0.15})
         Xdeep = generate_aml_data(model_aml, Xte, Yte, {'type': 'DeepFool'})
-        Xpgd = generate_aml_data(model_aml, Xte, Yte, {'type': 'ProjectedGradientDescent', 'eps': 1.0, 'eps_step':0.1})
+        Xpgd = generate_aml_data(model_aml, Xte, Yte, {'type': 'ProjectedGradientDescent', 
+                                                       'eps': 1.0, 
+                                                       'eps_step':0.1, 
+                                                       'max_iter': 50})
 
         # for each of the snrs -> grab all of the data for that snr, which should have all of
         # the classes then evaluate the model on the data for the snr under test. store the 
@@ -152,7 +155,12 @@ def experiment_adversarial(file_path:str,
             Yhat_pgd = model.predict(Xpgd[snrs_te == snr])
             result_logger.add_scores(Yte[snrs_te==snr], 
                                      Yhat, Yhat_fgsm, Yhat_deep, Yhat_pgd, snr)
-    
+
+        # save the results to a pickle file 
+        results = {'result_logger': result_logger}
+        pickle.dump(results, open(output_path, 'wb'))
+
+        
     result_logger.finalize()
 
     # save the results to a pickle file 

@@ -82,7 +82,7 @@ class PerfLogger():
         self.aucs = np.zeros((self.n_snrs,))
         self.name = name 
         self.params = params
-        self.count = 0
+        self.count = np.zeros((self.n_snrs,))
         self.number_correct = 0. 
         self.number_instances_processed = 0.
         self.overall_accuracy = 0
@@ -110,10 +110,11 @@ class PerfLogger():
     def finalize(self):
         """scale the scores based on the number of runs performed
         """
-        self.accuracy /= self.count
-        self.perplexity /= self.count 
-        self.aucs /= self.count
-        self.overall_accuracy = self.number_correct/self.number_instances_processed
+        for i in range(self.n_snrs): 
+            self.accuracy[i] /= self.count[i]
+            self.perplexity[i] /= self.count[i] 
+            self.aucs[i] /= self.count[i]
+            self.overall_accuracy = self.number_correct/self.number_instances_processed
 
 
 class AdversarialPerfLogger(): 
@@ -188,7 +189,7 @@ class AdversarialPerfLogger():
 
         self.name = name 
         self.params = params
-        self.count = 0
+        self.count = np.zeros((self.n_snrs,)) 
     
     def add_scores(self, Y, Yhat, Yhat_fgsm, Yhat_deep, Yhat_pgd, snr): 
         """add the current scores to the logger 
@@ -222,23 +223,24 @@ class AdversarialPerfLogger():
         self.perplexity_pgd[self.snrs == snr] += ppl
         self.aucs_pgd[self.snrs == snr] += auc
 
-        self.count += 1
+        self.count[self.snrs == snr] += 1
 
     def finalize(self): 
         """scale the scores based on the number of runs performed
         """
-        self.accuracy /= self.count
-        self.perplexity /= self.count 
-        self.aucs /= self.count
+        for i in range(self.n_snrs): 
+            self.accuracy[i] /= self.count[i]
+            self.perplexity[i] /= self.count[i] 
+            self.aucs[i] /= self.count[i]
 
-        self.accuracy_fgsm /= self.count
-        self.perplexity_fgsm /= self.count 
-        self.aucs_fgsm /= self.count
+            self.accuracy_fgsm[i] /= self.count[i]
+            self.perplexity_fgsm[i] /= self.count[i] 
+            self.aucs_fgsm[i] /= self.count[i]
 
-        self.accuracy_deep /= self.count
-        self.perplexity_deep /= self.count 
-        self.aucs_deep /= self.count
+            self.accuracy_deep[i] /= self.count[i]
+            self.perplexity_deep[i] /= self.count[i] 
+            self.aucs_deep[i] /= self.count[i]
 
-        self.accuracy_pgd /= self.count
-        self.perplexity_pgd /= self.count 
-        self.aucs_pgd /= self.count
+            self.accuracy_pgd[i] /= self.count[i]
+            self.perplexity_pgd[i] /= self.count[i] 
+            self.aucs_pgd[i] /= self.count[i]
