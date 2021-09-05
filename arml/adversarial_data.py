@@ -55,6 +55,7 @@ def generate_aml_data(model, X:np.ndarray, Y:np.ndarray, attack_params:dict):
         attack = ProjectedGradientDescent(classifier, 
                                           eps=attack_params['eps'], 
                                           eps_step=attack_params['eps_step'], 
+                                          max_iter=attack_params['max_iter'],
                                           verbose=False)
     else: 
         raise(ValueError(''.join(['Unknown attack ', attack_params['type']])))
