@@ -244,3 +244,10 @@ class AdversarialPerfLogger():
             self.accuracy_pgd[i] /= self.count[i]
             self.perplexity_pgd[i] /= self.count[i] 
             self.aucs_pgd[i] /= self.count[i]
+
+
+class FGSMLogger(AdversarialPerfLogger): 
+
+    def __init__(self, name:str, snrs:np.ndarray, mods:np.ndarray, params:dict): 
+        AdversarialPerfLogger.__init__(self, name=name, snrs=snrs, mods=mods, params=params) 
+    
