@@ -1,6 +1,8 @@
 # files 
 *.pyc
 data/RML2016.10a_dict.pkl
+*.pdf 
 
 # folders 
 logs/
+.ipynb_checkpoints/
