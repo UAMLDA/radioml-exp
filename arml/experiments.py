@@ -52,7 +52,7 @@ def experiment_basic_radioml(file_path:str,
                         'file_path': 'convmodrecnets_CNN2_0.5.wts.h5'}
     
     # initialize the performances to empty 
-    result_logger = PerfLogger(name='basic_radioml', snrs=snrs, mods=mods, params=train_params)
+    result_logger = PerfLogger(name='basic_radioml', snrs=np.unique(snrs), mods=np.unique(mods), params=train_params)
     
     kf = KFold(n_splits=n_runs)
     
@@ -118,8 +118,8 @@ def experiment_adversarial(file_path:str,
     
     # initialize the performances to empty 
     result_logger = AdversarialPerfLogger(name=logger_name, 
-                                          snrs=snrs, 
-                                          mods=mods, 
+                                          snrs=np.unique(snrs), 
+                                          mods=np.unique(mods), 
                                           params=[train_params, train_adversary_params])
     
     kf = KFold(n_splits=n_runs)
