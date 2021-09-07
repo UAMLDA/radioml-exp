@@ -61,7 +61,7 @@ def experiment_basic_radioml(file_path:str,
         Xtr, Ytr, Xte, Yte, snrs_te = X[train_index], Y[train_index], X[test_index], Y[test_index], snrs[test_index]
 
         # train the model 
-        model, history = nn_model(X=Xtr, Y=Ytr, train_param=train_params)
+        model = nn_model(X=Xtr, Y=Ytr, train_param=train_params)
         
         # for each of the snrs -> grab all of the data for that snr, which should have all of
         # the classes then evaluate the model on the data for the snr under test. store the 
@@ -134,9 +134,9 @@ def experiment_adversarial(file_path:str,
             sample_indices = np.random.randint(0, Ntr, Ntr)        
 
             # train the model
-            model_aml, _ = nn_model(X=Xtr[sample_indices], Y=Ytr[sample_indices], train_param=train_adversary_params) 
+            model_aml = nn_model(X=Xtr[sample_indices], Y=Ytr[sample_indices], train_param=train_adversary_params) 
         
-        model, _ = nn_model(X=Xtr, Y=Ytr, train_param=train_params)
+        model = nn_model(X=Xtr, Y=Ytr, train_param=train_params)
         
         Xfgsm = generate_aml_data(model_aml, Xte, Yte, {'type': 'FastGradientMethod', 'eps': 0.15})
         Xdeep = generate_aml_data(model_aml, Xte, Yte, {'type': 'DeepFool'})

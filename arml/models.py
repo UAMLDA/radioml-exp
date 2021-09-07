@@ -40,10 +40,10 @@ def nn_model(X:np.ndarray, Y:np.ndarray, train_param:dict):
     train_param : dict
     """
     if train_param['type'] == 'vtcnn2': 
-        model, history = vtcnn2(X=X, Y=Y, train_param=train_param)
+        model = vtcnn2(X=X, Y=Y, train_param=train_param)
     else: 
         raise(NotImplementedError(''.join([train_param['type'], 'is not implemented.'])))
-    return model, history
+    return model
 
 def vtcnn2(X:np.ndarray, Y:np.ndarray, train_param:dict): 
     """implementation of the vtcnn2
@@ -116,17 +116,19 @@ def vtcnn2(X:np.ndarray, Y:np.ndarray, train_param:dict):
                                                           mode='auto')
 
     # train the model 
-    history = model.fit(Xtr, Ytr,
-                        batch_size=train_param['batch_size'],
-                        epochs=train_param['nb_epoch'],
-                        verbose=train_param['verbose'],
-                        validation_data=(Xval, Yval), 
-                        callbacks=[tensorboard_callback, 
-                                   checkpoint_callback, 
-                                   earlystop_callback]
-                        )
+    model.fit(Xtr, Ytr, 
+              batch_size=train_param['batch_size'],
+              epochs=train_param['nb_epoch'],
+              verbose=train_param['verbose'],
+              validation_data=(Xval, Yval), 
+              callbacks=[
+                            tensorboard_callback, 
+                            checkpoint_callback, 
+                            earlystop_callback
+                        ]
+              )
 
-    return model, history 
+    return model 
 
 def get_birnn(X:np.ndarray, Y:np.ndarray): 
     """
