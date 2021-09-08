@@ -61,7 +61,7 @@ def experiment_basic_radioml(file_path:str,
         Xtr, Ytr, Xte, Yte, snrs_te = X[train_index], Y[train_index], X[test_index], Y[test_index], snrs[test_index]
 
         # train the model 
-        model, history = nn_model(X=Xtr, Y=Ytr, train_param=train_params)
+        model  = nn_model(X=Xtr, Y=Ytr, train_param=train_params)
         
         # for each of the snrs -> grab all of the data for that snr, which should have all of
         # the classes then evaluate the model on the data for the snr under test. store the 
