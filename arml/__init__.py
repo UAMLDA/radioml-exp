@@ -22,9 +22,11 @@
 
 from .experiments import experiment_basic_radioml
 from .experiments import experiment_adversarial
+from .experiments import experiment_fgsm
 
 __all__ = [
             'experiment_basic_radioml', 
-            'experiment_adversarial'
+            'experiment_adversarial',
+            'experiment_fgsm'
            ]
 

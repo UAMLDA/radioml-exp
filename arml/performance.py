@@ -245,9 +245,98 @@ class AdversarialPerfLogger():
             self.perplexity_pgd[i] /= self.count[i] 
             self.aucs_pgd[i] /= self.count[i]
 
+class FGSMPerfLogger(): 
+    """class the track the performances 
 
-class FGSMLogger(AdversarialPerfLogger): 
+    Attributes 
+    ----------
+    snrs : np.ndarray
+        Array of SNRS
+    modes : np.ndarray
+        Array of modulation types 
+    n_classes : np.ndarray
+        Number of modulation types 
+    n_snrs : np.ndarray
+        Number of SNRS 
+    accuracy : np.ndarray
+        Arracy of accuracy 
+    perplexity : np.ndarray
+        Arracy of perplexity 
+    aucs : np.ndarray
+        Arracy of AUCs 
+    name : str 
+        Name of the logger
+    params : dict 
+        Training parameters of the experiment 
+    count : int 
+        Number of runs performed in the experiment
+    overall_accuracy : float 
+        Overall accuracy across all SNRs  
 
-    def __init__(self, name:str, snrs:np.ndarray, mods:np.ndarray, params:dict): 
-        AdversarialPerfLogger.__init__(self, name=name, snrs=snrs, mods=mods, params=params) 
+    Methods 
+    -------
+    add_scores(Y, Yhat, snr)
+        Adds the performance scores from Y and Yhat for the current SNR.
+    scale()
+        Scale the performances by the number of runs. The class keeps track 
+        of the number of runs 
+    """
+
+    def __init__(self, name:str, snrs:np.ndarray, mods:np.ndarray, params:dict, epsilons=np.ndarray): 
+        """initialize the object 
+
+        Parameters
+        ----------
+        name : str 
+            Name of the logger 
+        snrs : np.ndarray 
+            Array of SNRs 
+        mods : np.ndarray 
+            Array of MODs 
+        params : dict 
+            Dictionary of training parameters 
+        """
+        self.snrs = np.sort(snrs) 
+        self.mods = mods
+        self.n_classes = len(mods)
+        self.n_snrs = len(snrs)
+        self.epsilons = epsilons 
+        self.n_epsilons = len(epsilons)
+
+        self.accuracy = np.zeros((self.n_snrs, self.n_epsilons))
+        self.perplexity = np.zeros((self.n_snrs, self.n_epsilons))
+        self.aucs = np.zeros((self.n_snrs, self.n_epsilons))
+
+        self.name = name 
+        self.params = params
+        self.count = 0
+
     
+    def add_scores(self, Y:np.ndarray, Yhat:np.ndarray, snr:float, eps_index:int): 
+        """add the current scores to the logger 
+
+        Parameters
+        ----------
+        Y : np.ndarray 
+            Ground truth labels 
+        Yhat : np.ndarray 
+            Predictions on FGSM data
+        snr : int 
+            SNR level from the predictions 
+        """
+        auc, acc, ppl = prediction_stats(Y, Yhat)
+        self.accuracy[self.snrs == snr, eps_index] += acc
+        self.perplexity[self.snrs == snr, eps_index] += ppl
+        self.aucs[self.snrs == snr, eps_index] += auc
+    
+    def increment_count(self): 
+        """update the count that is for cross validation
+        """
+        self.count += 1
+    
+    def finalize(self):
+        """scale the scores based on the number of runs performed
+        """
+        self.accuracy /= self.count
+        self.perplexity /= self.count
+        self.aucs /= self.count
