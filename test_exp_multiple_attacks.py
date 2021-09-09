@@ -29,8 +29,6 @@ n_runs = 5
 verbose = 1
 # type of experiment 
 scenario = 'A'
-# attack epsilons 
-epsilons = [0.01, 0.025, 0.05, 0.75, 0.1, 0.125, 0.15, 0.175,  0.2]
 # defenders model 
 train_params = {'type': 'vtcnn2', 
                 'dropout': 0.5, 
@@ -60,7 +58,6 @@ experiment_adversarial(file_path=file_path,
                        n_runs=n_runs, 
                        verbose=verbose, 
                        scenario=scenario,
-                       epsilons=epsilons, 
                        train_params=train_params, 
                        train_adversary_params=train_adversary_params, 
                        logger_name=logger_name,

@@ -172,7 +172,7 @@ def experiment_fgsm(file_path:str,
                     n_runs:int=5, 
                     verbose:int=1, 
                     scenario:str='A',
-                    epsilons:list=[0.01, 0.025, 0.05, 0.75, 0.1, 0.125, 0.15, 0.175,  0.2], 
+                    epsilons:list=[0.01, 0.05, 0.1, 0.15, 0.2],  # [0.25, 0.75, 0.125, 0.175]
                     train_params:dict={}, 
                     train_adversary_params:dict={}, 
                     logger_name:str='aml_radioml_vtcnn2_vtcnn2_scenario_A',
@@ -180,7 +180,7 @@ def experiment_fgsm(file_path:str,
     """
     """
 
-    X, Y, snrs, mods, encoder = load_radioml(file_path=file_path, shuffle=True)
+    X, Y, snrs, mods, _ = load_radioml(file_path=file_path, shuffle=True)
     C = 1
     N, H, W = X.shape
     X = X.reshape(N, H, W, C)

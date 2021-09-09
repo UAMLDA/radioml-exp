@@ -30,26 +30,27 @@ verbose = 1
 # type of experiment 
 scenario = 'A'
 # attack epsilons 
-epsilons = [0.01, 0.025, 0.05, 0.75, 0.1, 0.125, 0.15, 0.175,  0.2]
+epsilons = [0.01, 0.05, 0.1, 0.15,  0.2]
+# epsilons = [0.025, 0.75, 0.125, 0.175]
 # defenders model 
 train_params = {'type': 'vtcnn2', 
                 'dropout': 0.5, 
                 'val_split': 0.9, 
                 'batch_size': 1024, 
-                'nb_epoch': 50, 
+                'nb_epoch': 40, 
                 'verbose': verbose, 
                 'NHWC': [220000, 2, 128, 1],
-                'tpu': True, 
+                'tpu': False, 
                 'file_path': 'convmodrecnets_CNN2_0.5.wts.h5'}
 # adversary's model 
 train_adversary_params = {'type': 'vtcnn2', 
                           'dropout': 0.5, 
                           'val_split': 0.9, 
                           'batch_size': 1024, 
-                          'nb_epoch': 50, 
+                          'nb_epoch': 40, 
                           'verbose': verbose, 
                           'NHWC': [220000, 2, 128, 1],
-                          'tpu': True, 
+                          'tpu': False, 
                           'file_path': 'convmodrecnets_adversary_CNN2_0.5.wts.h5'}
 # name for the logger     
 logger_name = 'aml_radioml_vtcnn2_vtcnn2_scenario_A'
