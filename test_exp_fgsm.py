@@ -26,7 +26,7 @@ file_path = 'data/RML2016.10a_dict.pkl'
 # number of cross validation runs 
 n_runs = 5
 # verbose ? 
-verbose = 1
+verbose = 2
 # type of experiment 
 scenario = 'A'
 # attack epsilons 

@@ -60,43 +60,41 @@ def vtcnn2(X:np.ndarray, Y:np.ndarray, train_param:dict):
     """
     _, H, W, C = train_param['NHWC']
     
-    def get_model(): 
-        model = models.Sequential(name='CNN_Architecture')
+    model = models.Sequential(name='CNN_Architecture')
 
-        model.add(ZeroPadding2D((0,2),
+    model.add(ZeroPadding2D((0,2),
               data_format='channels_last'))
 
-        model.add(Conv2D(256,(1,3),
+    model.add(Conv2D(256,(1,3),
               activation= 'relu',
               data_format='channels_last',
               input_shape= (H,W,C),
               name = 'ConvLayer1'))
-        model.add(Dropout(0.5))
-        model.add(Conv2D(80,(2,3),
+    model.add(Dropout(0.5))
+    model.add(Conv2D(80,(2,3),
               activation= 'relu',
               data_format='channels_last', 
               name='ConvLayer2'))
-        model.add(Conv2D(256,(1,3),
+    model.add(Conv2D(256,(1,3),
               activation= 'relu',
               data_format='channels_last',
               name='ConvLayer3'))
-        model.add(Dropout(0.5))
-        model.add(Flatten())
-        model.add(Dense(512,
+    model.add(Dropout(0.5))
+    model.add(Flatten())
+    model.add(Dense(512,
               activation='relu', 
               name='DenseLayer1'))
-        model.add(Dropout(0.5))
-        model.add(Dense(256,
+    model.add(Dropout(0.5))
+    model.add(Dense(256,
               activation='relu', 
               name='DenseLayer2'))
-        model.add(Dropout(0.5))
-        model.add(Dense(128,
+    model.add(Dropout(0.5))
+    model.add(Dense(128,
               activation='relu', 
               name='DenseLayer3'))
-        model.add(Dense(Y.shape[1],
+    model.add(Dense(Y.shape[1],
               activation='softmax', 
               name='Output'))
-        return model 
     
     # split the data into training and validation sets 
     Nval = int(train_param['val_split']*len(Y))
@@ -115,25 +113,9 @@ def vtcnn2(X:np.ndarray, Y:np.ndarray, train_param:dict):
                                                           verbose=0, 
                                                           mode='auto')
 
-    #flag to run on tpu 
-    if train_param['tpu']:
-        # Distribution strategies
-        resolver = tf.distribute.cluster_resolver.TPUClusterResolver(tpu='grpc://' + os.environ['COLAB_TPU_ADDR'])
-        tf.config.experimental_connect_to_cluster(resolver)
-        tf.tpu.experimental.initialize_tpu_system(resolver)
-
-        strategy = tf.distribute.experimental.TPUStrategy(resolver)
-        with strategy.scope():
-            model = get_model()
-            model.compile(loss='categorical_crossentropy', optimizer='adam')
-            model.compile(optimizer='adam',
-                loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-                metrics=['sparse_categorical_accuracy'])
-    else: 
-        model = get_model()
-        # compile and build the moedl 
-        model.compile(loss='categorical_crossentropy', optimizer='adam')
-        model.build(input_shape = (None,H,W,C))
+    # compile and build the moedl 
+    model.compile(loss='categorical_crossentropy', optimizer='adam')
+    model.build(input_shape = (None,H,W,C))
 
     
     # train the model 
