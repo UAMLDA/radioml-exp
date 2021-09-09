@@ -19,7 +19,7 @@
 # OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR 
 # OTHER DEALINGS IN THE SOFTWARE.
 
-import pickle 
+import pickle
 import numpy as np
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.metrics import roc_auc_score
