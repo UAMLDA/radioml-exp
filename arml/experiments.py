@@ -49,6 +49,7 @@ def experiment_basic_radioml(file_path:str,
                         'nb_epoch': 50, 
                         'verbose': verbose, 
                         'NHWC': [N, H, W, C],
+                        'tpu': False, 
                         'file_path': 'convmodrecnets_CNN2_0.5.wts.h5'}
     
     # initialize the performances to empty 
@@ -81,7 +82,6 @@ def experiment_adversarial(file_path:str,
                            n_runs:int=5, 
                            verbose:int=1, 
                            scenario:str='A', 
-                           attack_params:dict={},
                            train_params:dict={}, 
                            train_adversary_params:dict={}, 
                            logger_name:str='aml_radioml_vtcnn2_vtcnn2_scenario_A',
@@ -102,6 +102,7 @@ def experiment_adversarial(file_path:str,
                         'nb_epoch': 50, 
                         'verbose': verbose, 
                         'NHWC': [N, H, W, C],
+                        'tpu': False, 
                         'file_path': 'convmodrecnets_CNN2_0.5.wts.h5'}
     
     if len(train_adversary_params) == 0:
@@ -113,8 +114,6 @@ def experiment_adversarial(file_path:str,
                                   'verbose': verbose, 
                                   'NHWC': [N, H, W, C],
                                   'file_path': 'convmodrecnets_adversary_CNN2_0.5.wts.h5'}
-    if len(attack_params) == 0: 
-        attack_params = {'type': 'FastGradientMethod', 'eps':.15}
     
     # initialize the performances to empty 
     result_logger = AdversarialPerfLogger(name=logger_name, 
@@ -194,6 +193,7 @@ def experiment_fgsm(file_path:str,
                         'nb_epoch': 50, 
                         'verbose': verbose, 
                         'NHWC': [N, H, W, C],
+                        'tpu': False, 
                         'file_path': 'convmodrecnets_CNN2_0.5.wts.h5'}
     
     if len(train_adversary_params) == 0:
@@ -204,6 +204,7 @@ def experiment_fgsm(file_path:str,
                                   'nb_epoch': 50, 
                                   'verbose': verbose, 
                                   'NHWC': [N, H, W, C],
+                                  'tpu': False, 
                                   'file_path': 'convmodrecnets_adversary_CNN2_0.5.wts.h5'}
     
     # initialize the performances to empty 

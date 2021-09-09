@@ -19,7 +19,7 @@
 # OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR 
 # OTHER DEALINGS IN THE SOFTWARE.
 
-from arml import experiment_fgsm
+from arml import experiment_adversarial
 
 # test the basic experiment
 file_path = 'data/RML2016.10a_dict.pkl'
@@ -39,7 +39,7 @@ train_params = {'type': 'vtcnn2',
                 'nb_epoch': 50, 
                 'verbose': verbose, 
                 'NHWC': [220000, 2, 128, 1],
-                'tpu': False, 
+                'tpu': True, 
                 'file_path': 'convmodrecnets_CNN2_0.5.wts.h5'}
 # adversary's model 
 train_adversary_params = {'type': 'vtcnn2', 
@@ -49,21 +49,21 @@ train_adversary_params = {'type': 'vtcnn2',
                           'nb_epoch': 50, 
                           'verbose': verbose, 
                           'NHWC': [220000, 2, 128, 1],
-                          'tpu': False, 
+                          'tpu': True, 
                           'file_path': 'convmodrecnets_adversary_CNN2_0.5.wts.h5'}
 # name for the logger     
 logger_name = 'aml_radioml_vtcnn2_vtcnn2_scenario_A'
 # output path
-output_path = 'outputs/aml_fgsm_vtcnn2_vtcnn2_scenario_A_radioml.pkl'
+output_path = 'outputs/aml_vtcnn2_vtcnn2_scenario_A_radioml.pkl'
 
-experiment_fgsm(file_path=file_path,
-                n_runs=n_runs, 
-                verbose=verbose, 
-                scenario=scenario,
-                epsilons=epsilons, 
-                train_params=train_params, 
-                train_adversary_params=train_adversary_params, 
-                logger_name=logger_name,
-                output_path=output_path)
+experiment_adversarial(file_path=file_path,
+                       n_runs=n_runs, 
+                       verbose=verbose, 
+                       scenario=scenario,
+                       epsilons=epsilons, 
+                       train_params=train_params, 
+                       train_adversary_params=train_adversary_params, 
+                       logger_name=logger_name,
+                       output_path=output_path)
 
 

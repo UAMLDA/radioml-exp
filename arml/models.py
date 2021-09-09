@@ -19,12 +19,14 @@
 # OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR 
 # OTHER DEALINGS IN THE SOFTWARE.
 
+import os 
 import numpy as np 
 import datetime 
 import tensorflow as tf 
 from tensorflow.keras import models 
 from tensorflow.keras.layers import Dense, Dropout, Flatten
 from tensorflow.keras.layers import ZeroPadding2D, Conv2D
+from tensorflow.contrib.tpu.python.tpu import keras_support
 
 tf.compat.v1.disable_eager_execution()
 
@@ -115,6 +117,19 @@ def vtcnn2(X:np.ndarray, Y:np.ndarray, train_param:dict):
                                                           verbose=0, 
                                                           mode='auto')
 
+    #flag to run on tpu 
+    if train_param['tpu']:
+        tpu_grpc_url = "grpc://"+os.environ["COLAB_TPU_ADDR"]
+    
+        #connect the TPU cluster using the address 
+        tpu_cluster_resolver = tf.contrib.cluster_resolver.TPUClusterResolver(tpu_grpc_url)
+    
+        #run the model on different clusters 
+        strategy = keras_support.TPUDistributionStrategy(tpu_cluster_resolver)
+    
+        #convert the model to run on tpu 
+        model = tf.contrib.tpu.keras_to_tpu_model(model, strategy=strategy)
+    
     # train the model 
     model.fit(Xtr, Ytr, 
               batch_size=train_param['batch_size'],
