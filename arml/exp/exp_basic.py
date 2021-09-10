@@ -35,6 +35,28 @@ def experiment_basic_radioml(file_path:str,
                              train_params:dict={}, 
                              output_path:str='outputs/basic_radioml.pkl'): 
     """run a cross validation on the radio ml dataset without an adversary 
+    
+    Parameters
+    ----------
+    file_path : str 
+        Location of the radioml dataset 
+    n_runs : int 
+        Number of cross validations 
+    verbose : bool 
+        Verbose? 
+    train_params : dict 
+        Training parameters. Default 
+            train_params = {'type': 'vtcnn2', 
+                        'dropout': 0.5, 
+                        'val_split': 0.9, 
+                        'batch_size': 1024, 
+                        'nb_epoch': 50, 
+                        'verbose': verbose, 
+                        'NHWC': [N, H, W, C],
+                        'tpu': False, 
+                        'file_path': 'convmodrecnets_CNN2_0.5.wts.h5'}
+    output_path : str
+        output file path [Default: outputs/basic_radioml.pkl]
     """
     X, Y, snrs, mods, _ = load_radioml(file_path=file_path, shuffle=True)
     C = 1
