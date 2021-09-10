@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python 
 
 # Copyright 2021 
@@ -31,15 +30,55 @@ from ..adversarial_data import generate_aml_data
 from sklearn.model_selection import KFold
 
 def experiment_single_adversarial(file_path:str,
-                           n_runs:int=5, 
-                           verbose:int=1, 
-                           scenario:str='A', 
-                           attack_type:str='FastGradientMethod', 
-                           train_params:dict={}, 
-                           train_adversary_params:dict={}, 
-                           logger_name:str='aml_radioml_vtcnn2_vtcnn2_scenario_A',
-                           output_path:str='outputs/aml_vtcnn2_vtcnn2_scenario_A_radioml.pkl'): 
-    """
+                                  n_runs:int=5, 
+                                  verbose:int=1, 
+                                  scenario:str='A', 
+                                  attack_type:str='FastGradientMethod', 
+                                  train_params:dict={}, 
+                                  train_adversary_params:dict={}, 
+                                  logger_name:str='aml_radioml_vtcnn2_vtcnn2_scenario_A',
+                                  output_path:str='outputs/aml_vtcnn2_vtcnn2_scenario_A_radioml.pkl'): 
+    """run a single attack agains the radio ml dataset 
+
+    Parameters
+    ---------- 
+    file_path : str
+        Location of the radioml dataset
+    n_runs : int
+        Number of cross validations  
+    verbose : int
+        Verbose?  
+    scenario : str 
+        Adversary knowledge: 
+            'A': has an NN structure and a subset of the training data  
+    attack_type : str 
+        Attack type: FastGradientMethod, DeepFool, ProjectedGradientDescent
+    train_params : dict
+        Training parameters
+            train_params = {'type': 'vtcnn2', 
+                        'dropout': 0.5, 
+                        'val_split': 0.9, 
+                        'batch_size': 1024, 
+                        'nb_epoch': 50, 
+                        'verbose': verbose, 
+                        'NHWC': [N, H, W, C],
+                        'tpu': False, 
+                        'file_path': 'convmodrecnets_CNN2_0.5.wts.h5'}
+    train_adversary_params : dict
+        Training parameters 
+            train_adversary_params = {'type': 'vtcnn2', 
+                                  'dropout': 0.5, 
+                                  'val_split': 0.9, 
+                                  'batch_size': 1024, 
+                                  'nb_epoch': 50, 
+                                  'verbose': verbose, 
+                                  'NHWC': [N, H, W, C],
+                                  'epsilon': 0.15, 
+                                  'file_path': 'convmodrecnets_adversary_CNN2_0.5.wts.h5'}
+    logger_name : str
+        Name of the logger class [default: 'aml_radioml_vtcnn2_vtcnn2_scenario_A']
+    output_path : str
+        Output path [default: outputs/aml_vtcnn2_vtcnn2_scenario_A_radioml.pkl]
     """
 
     X, Y, snrs, mods, _ = load_radioml(file_path=file_path, shuffle=True)
