@@ -64,7 +64,7 @@ def load_radioml(file_path:str, shuffle:bool=True):
     return X, Y, SNRS, MODS, encoder
 
 
-def prediction_stats(Y, Yhat):
+def prediction_stats(Y, Yhat, epsilon=1e-4):
     """prediction statistics
 
     Parameters 
@@ -80,5 +80,5 @@ def prediction_stats(Y, Yhat):
     """
     auc = roc_auc_score(Y, Yhat)
     acc = (np.argmax(Y, axis=1) == np.argmax(Yhat, axis=1)).sum()/len(Y)
-    ppl = 2**(-(Y*np.log(Yhat)/np.log(2)).sum(axis=1).mean())
+    ppl = 2**(-(Y*np.log(Yhat+epsilon)/np.log(2)).sum(axis=1).mean())
     return auc, acc, ppl 

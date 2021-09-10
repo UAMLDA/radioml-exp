@@ -2,8 +2,10 @@
 
 from arml.utils import load_radioml
 
-from arml.experiments import experiment_basic_radioml, experiment_adversarial
-from arml import experiment_fgsm    
+# from arml.experiments import experiment_basic_radioml, experiment_adversarial
+# from arml import experiment_fgsm    
+
+from arml.exp import exp_basic
 
 # test the basic experiment
 file_path = "data/RML2016.10a_dict.pkl"
@@ -11,9 +13,7 @@ file_path = "data/RML2016.10a_dict.pkl"
 #experiment_adversarial(file_path=file_path)
 # experiment_adversarial(file_path=file_path)
 # experiment_basic_radioml(file_path=file_path, n_runs=5)
-experiment_fgsm(file_path=file_path)
-
->>>>>>> 6f2e9a4fee4ff0e71a88087881c4eca5bdb9d64b
+# experiment_fgsm(file_path=file_path)
 
 # test data loader 
 #X, Y, snrs, mods, encoder = load_radioml(file_path=file_path)
