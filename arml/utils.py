@@ -80,5 +80,5 @@ def prediction_stats(Y, Yhat):
     """
     auc = roc_auc_score(Y, Yhat)
     acc = (np.argmax(Y, axis=1) == np.argmax(Yhat, axis=1)).sum()/len(Y)
-    ppl = 2**(-(Y*Yhat).sum(axis=1).mean())
+    ppl = 2**(-(Y*np.log(Yhat)/np.log(2)).sum(axis=1).mean())
     return auc, acc, ppl 
