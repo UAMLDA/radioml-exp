@@ -12,3 +12,15 @@ The training and validation performances are available in the `logs/fit` directo
 ```
 $ tensorboard --logdir logs/fit
 ```
+
+# Generating Results 
+
+The Adversarial Robustness Toolbox needs to be installed prior to running the code. Run `pip install -r requirements.txt` to install the dependencies. Once installed, the shell commands below will produce the results. Run each command one at a time if you're using Google Colab. After a command is run then you should restart the Colab session to avoid a timeout. 
+
+```
+$ python test_fsgm.py 
+$ python test_single_attack.py FastGradientMethod 
+$ python test_single_attack.py DeepFool 
+$ python test_single_attack.py ProjectedGradientDescent 
+$ python test_multiple_attacks.py     # do not run on Google Colab
+```
