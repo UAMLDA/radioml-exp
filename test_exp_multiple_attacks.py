@@ -52,7 +52,7 @@ train_adversary_params = {'type': 'vtcnn2',
 # name for the logger     
 logger_name = 'aml_radioml_vtcnn2_vtcnn2_scenario_A'
 # output path
-output_path = 'outputs/aml_vtcnn2_vtcnn2_scenario_A_radioml.pkl'
+output_path = 'outputs/aml_vtcnn2_vtcnn2_scenario_A_radioml_multiple_attack.pkl'
 
 experiment_adversarial(file_path=file_path,
                        n_runs=n_runs, 
