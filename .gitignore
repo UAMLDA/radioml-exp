@@ -7,3 +7,4 @@ data/RML2016.10a_dict.pkl
 # folders 
 logs/
 .ipynb_checkpoints/
+.vscode/

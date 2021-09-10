@@ -19,7 +19,7 @@
 # OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR 
 # OTHER DEALINGS IN THE SOFTWARE.
 
-from arml import experiment_fgsm
+from arml.exp import exp_fgsm_impact
 
 # test the basic experiment
 file_path = 'data/RML2016.10a_dict.pkl'
@@ -57,7 +57,7 @@ logger_name = 'aml_radioml_vtcnn2_vtcnn2_scenario_A'
 # output path
 output_path = 'outputs/aml_fgsm_vtcnn2_vtcnn2_scenario_A_radioml.pkl'
 
-experiment_fgsm(file_path=file_path,
+exp_fgsm_impact(file_path=file_path,
                 n_runs=n_runs, 
                 verbose=verbose, 
                 scenario=scenario,

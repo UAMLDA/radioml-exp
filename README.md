@@ -15,7 +15,7 @@ $ tensorboard --logdir logs/fit
 
 # Generating Results 
 
-The Adversarial Robustness Toolbox needs to be installed prior to running the code. Run `pip install -r requirements.txt` to install the dependencies. Once installed, the shell commands below will produce the results. Run each command one at a time if you're using Google Colab. After a command is run then you should restart the Colab session to avoid a timeout. 
+The [Adversarial Robustness Toolbox](https://github.com/Trusted-AI/adversarial-robustness-toolbox) needs to be installed prior to running the code. Run `pip install -r requirements.txt` to install the dependencies. Once installed, the shell commands below will produce the results. Run each command one at a time if you're using Google Colab. After a command is run then you should restart the Colab session to avoid a timeout. 
 
 ```
 $ python test_fsgm.py 
