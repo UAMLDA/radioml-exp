@@ -38,7 +38,46 @@ def experiment_adversarial(file_path:str,
                            train_adversary_params:dict={}, 
                            logger_name:str='aml_radioml_vtcnn2_vtcnn2_scenario_A',
                            output_path:str='outputs/aml_vtcnn2_vtcnn2_scenario_A_radioml.pkl'): 
-    """
+    """run mulltiple attacks (FGSM, DeepFool, PGD) on the radioml dataset. note that this is not going to run 
+    on google colab because it takes too long to execute. must be run on another cloud service or workstation. 
+
+    Parameters
+    ---------- 
+    file_path : str
+        Location of the radioml dataset
+    n_runs : int
+        Number of cross validations  
+    verbose : int
+        Verbose?  
+    scenario : str 
+        Adversary knowledge: 
+            'A': has an NN structure and a subset of the training data  
+    train_params : dict
+        Training parameters
+            train_params = {'type': 'vtcnn2', 
+                        'dropout': 0.5, 
+                        'val_split': 0.9, 
+                        'batch_size': 1024, 
+                        'nb_epoch': 50, 
+                        'verbose': verbose, 
+                        'NHWC': [N, H, W, C],
+                        'tpu': False, 
+                        'file_path': 'convmodrecnets_CNN2_0.5.wts.h5'}
+    train_adversary_params : dict
+        Training parameters 
+            train_adversary_params = {'type': 'vtcnn2', 
+                                  'dropout': 0.5, 
+                                  'val_split': 0.9, 
+                                  'batch_size': 1024, 
+                                  'nb_epoch': 50, 
+                                  'verbose': verbose, 
+                                  'NHWC': [N, H, W, C],
+                                  'epsilon': 0.15, 
+                                  'file_path': 'convmodrecnets_adversary_CNN2_0.5.wts.h5'}
+    logger_name : str
+        Name of the logger class [default: 'aml_radioml_vtcnn2_vtcnn2_scenario_A']
+    output_path : str
+        Output path [default: outputs/aml_vtcnn2_vtcnn2_scenario_A_radioml.pkl]
     """
 
     X, Y, snrs, mods, _ = load_radioml(file_path=file_path, shuffle=True)
