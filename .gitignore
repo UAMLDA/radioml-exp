@@ -3,6 +3,7 @@
 data/RML2016.10a_dict.pkl
 *.pdf 
 *.wts.h5
+arml/experiments.py
 
 # folders 
 logs/
