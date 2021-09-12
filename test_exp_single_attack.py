@@ -53,7 +53,7 @@ train_adversary_params = {'type': 'vtcnn2',
 # name for the logger     
 logger_name = ''.join(['aml_radioml_vtcnn2_vtcnn2_scenario_A_single_attack_', sys.argv[1]])
 # output path
-output_path = ''.join(['outputs/aml_radioml_vtcnn2_vtcnn2_scenario_A_single_attack_', sys.argv[1]])
+output_path = ''.join(['outputs/aml_radioml_vtcnn2_vtcnn2_scenario_A_single_attack_', sys.argv[1], '.pkl'])
 
 exp_single_attack(file_path=file_path,
                   n_runs=n_runs, 
