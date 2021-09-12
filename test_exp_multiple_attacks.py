@@ -19,7 +19,7 @@
 # OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR 
 # OTHER DEALINGS IN THE SOFTWARE.
 
-from arml import experiment_adversarial
+from arml.exp import exp_multiple_attack
 
 # test the basic experiment
 file_path = 'data/RML2016.10a_dict.pkl'
@@ -54,13 +54,13 @@ logger_name = 'aml_radioml_vtcnn2_vtcnn2_scenario_A'
 # output path
 output_path = 'outputs/aml_vtcnn2_vtcnn2_scenario_A_radioml_multiple_attack.pkl'
 
-experiment_adversarial(file_path=file_path,
-                       n_runs=n_runs, 
-                       verbose=verbose, 
-                       scenario=scenario,
-                       train_params=train_params, 
-                       train_adversary_params=train_adversary_params, 
-                       logger_name=logger_name,
-                       output_path=output_path)
+exp_multiple_attack(file_path=file_path,
+                    n_runs=n_runs, 
+                    verbose=verbose, 
+                    scenario=scenario,
+                    train_params=train_params, 
+                    train_adversary_params=train_adversary_params, 
+                    logger_name=logger_name,
+                    output_path=output_path)
 
 
