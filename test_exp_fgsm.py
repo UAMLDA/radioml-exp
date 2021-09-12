@@ -26,7 +26,7 @@ file_path = 'data/RML2016.10a_dict.pkl'
 # number of cross validation runs 
 n_runs = 5
 # verbose ? 
-verbose = 2
+verbose = 1
 # type of experiment 
 scenario = 'A'
 # attack epsilons 
@@ -37,7 +37,7 @@ train_params = {'type': 'vtcnn2',
                 'dropout': 0.5, 
                 'val_split': 0.9, 
                 'batch_size': 1024, 
-                'nb_epoch': 40, 
+                'nb_epoch': 50, 
                 'verbose': verbose, 
                 'NHWC': [220000, 2, 128, 1],
                 'tpu': False, 
@@ -47,7 +47,7 @@ train_adversary_params = {'type': 'vtcnn2',
                           'dropout': 0.5, 
                           'val_split': 0.9, 
                           'batch_size': 1024, 
-                          'nb_epoch': 40, 
+                          'nb_epoch': 50, 
                           'verbose': verbose, 
                           'NHWC': [220000, 2, 128, 1],
                           'tpu': False, 
