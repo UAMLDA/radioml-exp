@@ -29,15 +29,15 @@ from ..adversarial_data import generate_aml_data
 
 from sklearn.model_selection import KFold
 
-def experiment_fgsm_wb(file_path:str,
+def experiment_fgsm_wb_5fold(file_path:str,
                     n_runs:int=5, 
                     verbose:int=1, 
                     # scenario:str='A',
                     epsilons:list=[0.00025, 0.0005],  # [0.25, 0.75, 0.125, 0.175]
                     train_params:dict={}, 
                     # train_adversary_params:dict={}, 
-                    logger_name:str='vtcnn2_FGSM_wb',
-                    output_path:str='outputs/vtcnn2_FGSM_wb_op.pkl'): 
+                    logger_name:str='vtcnn2_FGSM_5fold_wb',
+                    output_path:str='outputs/vtcnn2_FGSM_wb_5fold__op.pkl'): 
     """evaluate different values of epsilon with FGSM
 
     Robustness and Inter-Architecture Portability of Deep Neural Networks 
@@ -96,7 +96,7 @@ def experiment_fgsm_wb(file_path:str,
                         'verbose': verbose, 
                         'NHWC': [N, H, W, C],
                         'tpu': False, 
-                        'file_path': 'FGSM_CNN2_0.5.wts.h5'}
+                        'file_path': 'FGSM_CNN2_5fold.wts.h5'}
     
     # if len(train_adversary_params) == 0:
     #     train_adversary_params = {'type': 'vtcnn2', 

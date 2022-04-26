@@ -1,4 +1,4 @@
-from arml.exp import exp_fgsm_impact_wb
+from arml.exp import exp_fgsm_impact_wb_5fold
 
 file_path = 'data/RML2016.10a_dict.pkl'
 # number of cross validation runs 
@@ -18,16 +18,16 @@ train_params = {'type': 'vtcnn2',
                 'dropout': 0.5, 
                 'val_split': 0.9, 
                 'batch_size': 1024, 
-                'nb_epoch': 50, 
+                'nb_epoch': 2, 
                 'verbose': verbose, 
                 'NHWC': [220000, 2, 128, 1],
                 'tpu': False, 
-                'file_path': 'FGSM_CNN2_0.5.wts.h5'}
+                'file_path': 'FGSM_CNN2_5fold.wts.h5'}
 # name for the logger     
-logger_name = 'vtcnn2_FGSM_wb'
+logger_name = 'vtcnn2_FGSM_wb_5fold'
 # output path
-output_path = 'outputs/vtcnn2_FGSM_wb_op.pkl'  
-exp_fgsm_impact_wb(file_path=file_path,
+output_path = 'outputs/vtcnn2_FGSM_wb_5fold_op.pkl'  
+exp_fgsm_impact_wb_5fold(file_path=file_path,
                 n_runs=n_runs, 
                 verbose=verbose, 
                 # scenario=scenario,
