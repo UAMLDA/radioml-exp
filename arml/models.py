@@ -103,18 +103,23 @@ def vtcnn2(X:np.ndarray, Y:np.ndarray, train_param:dict):
     # setup the callbacks: tensorboard, checkpoints and early stopping
     log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+    # checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(train_param['file_path'], 
+    #                                                          monitor='val_loss', 
+    #                                                          verbose=0, 
+    #                                                          save_best_only=True, 
+    #                                                          mode='auto'),
     checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(train_param['file_path'], 
-                                                             monitor='val_loss', 
-                                                             verbose=0, 
-                                                             save_best_only=True, 
-                                                             mode='auto'),
-    earlystop_callback = tf.keras.callbacks.EarlyStopping(monitor='val_loss', 
+                                                            monitor='val_accuracy', 
+                                                            verbose=0, 
+                                                            save_best_only=True, 
+                                                            mode='auto'),
+    earlystop_callback = tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', 
                                                           patience=5, 
                                                           verbose=0, 
                                                           mode='auto')
 
     # compile and build the moedl 
-    model.compile(loss='categorical_crossentropy', optimizer='adam')
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     model.build(input_shape = (None,H,W,C))
 
     
