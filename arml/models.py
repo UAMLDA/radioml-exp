@@ -26,6 +26,7 @@ import tensorflow as tf
 from tensorflow.keras import models 
 from tensorflow.keras.layers import Dense, Dropout, Flatten
 from tensorflow.keras.layers import ZeroPadding2D, Conv2D
+
 # from tensorflow.contrib.tpu.python.tpu import keras_support
 
 tf.compat.v1.disable_eager_execution()
@@ -113,7 +114,7 @@ def vtcnn2(X:np.ndarray, Y:np.ndarray, train_param:dict):
                                                             verbose=0, 
                                                             save_best_only=True, 
                                                             mode='auto'),
-    earlystop_callback = tf.keras.callbacks.EarlyStopping(monitor='val_accuracy', 
+    earlystop_callback = tf.keras.callbacks.EarlyStopping(monitor='val_loss', 
                                                           patience=5, 
                                                           verbose=0, 
                                                           mode='auto')
@@ -137,6 +138,26 @@ def vtcnn2(X:np.ndarray, Y:np.ndarray, train_param:dict):
               )
 
     return model 
+
+def vtcnn2_load(name:str): 
+    """implementation of the vtcnn2
+    
+    Parameters
+    ----------
+    X : np.ndarray 
+        Training dataset (N, H, W, C)
+    Y : np.ndarray 
+        Training labels 
+    train_param : dict 
+    """
+    if name == "FGSM_CNN2_1fold.wts.h5":
+        model = tf.keras.models.load_model("FGSM_CNN2_1fold.wts.h5")
+    if name == "FGSM_CNN2_5fold.wts.h5":
+        model = tf.keras.models.load_model("FGSM_CNN2_5fold.wts.h5")
+    else: 
+        raise(NotImplementedError(''.join([name, 'is not implemented.'])))
+    return model 
+
 
 def get_birnn(X:np.ndarray, Y:np.ndarray): 
     """
