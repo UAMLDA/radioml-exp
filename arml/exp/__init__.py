@@ -23,6 +23,13 @@ from .exp_basic import experiment_basic_radioml as exp_basic
 from .exp_fgsm_impact import experiment_fgsm as exp_fgsm_impact
 from .exp_fgsm_impact_wb_5fold import experiment_fgsm_wb_5fold as exp_fgsm_impact_wb_5fold
 from .exp_fgsm_impact_wb_1fold import experiment_fgsm_wb_1fold as exp_fgsm_impact_wb_1fold
+from .exp_fgsm_impact_wb_1fold_high_conf import experiment_fgsm_wb_1fold_high_conf as exp_fgsm_impact_wb_1fold_high_conf
+from .exp_fgsm_impact_wb_1fold_shift import experiment_fgsm_wb_1fold_shift as exp_fgsm_impact_wb_1fold_shift
+from .exp_fgsm_impact_wb_5fold_shift import experiment_fgsm_wb_5fold_shift as exp_fgsm_impact_wb_5fold_shift
+from .exp_fgsm_impact_wb_1fold_shift1 import experiment_fgsm_wb_1fold_shift1 as exp_fgsm_impact_wb_1fold_shift1
+from .exp_fgsm_impact_wb_5fold_shift1 import experiment_fgsm_wb_5fold_shift1 as exp_fgsm_impact_wb_5fold_shift1
+from .exp_fgsm_impact_wb_1fold_shift5 import experiment_fgsm_wb_1fold_shift5 as exp_fgsm_impact_wb_1fold_shift5
+from .exp_fgsm_impact_wb_1fold_shift10 import experiment_fgsm_wb_1fold_shift10 as exp_fgsm_impact_wb_1fold_shift10
 from .exp_multiple_attack import experiment_adversarial as exp_multiple_attack
 from .exp_single_attack import experiment_single_adversarial as exp_single_attack
 
@@ -31,6 +38,13 @@ __all__ = [
     'exp_fgsm_impact', 
     'exp_fgsm_impact_wb_5fold',
     'exp_fgsm_impact_wb_1fold',
+    'exp_fgsm_impact_wb_1fold_high_conf',
+    'exp_fgsm_impact_wb_1fold_shift',
+    'exp_fgsm_impact_wb_5fold_shift',
+    'exp_fgsm_impact_wb_1fold_shift1',
+    'exp_fgsm_impact_wb_5fold_shift1',
+    'exp_fgsm_impact_wb_1fold_shift5',
+    'exp_fgsm_impact_wb_1fold_shift10',
     'exp_multiple_attack', 
     'exp_single_attack'
 ]
