@@ -11,8 +11,9 @@ verbose = 1
 # epsilons = [0.00025, 0.0005, 0.001, 0.0025,  0.005]
 epsilons = [0.00025, 0.0005, 0.001, 0.0025, 0.005]
 # the step size for shifts
-shifts = 100
+shifts = 10
 
+weight_path = 'FGSM_CNN2_5fold_shift%s.wts.h5'%(shifts)
 # For white box attack the adversarial mode are assume to be the
 # same as the defenders model
 # defenders model 
@@ -24,16 +25,17 @@ train_params = {'type': 'vtcnn2',
                 'verbose': verbose, 
                 'NHWC': [220000, 2, 128, 1],
                 'tpu': False, 
-                'file_path': 'FGSM_CNN2_5fold_shift1.wts.h5'}
-# name for the logger     
-logger_name = 'vtcnn2_FGSM_wb_5fold_shift1'
+                'file_path': weight_path }
+# name for the logger         
+logger_name = 'vtcnn2_FGSM_wb_5fold_shift%s'%(shifts)
 # output path
-output_path = 'outputs/vtcnn2_FGSM_wb_5fold_shift1_op.pkl'  
+output_path = 'outputs/vtcnn2_FGSM_wb_5fold_shift%s_op.pkl'%(shifts)
 exp_fgsm_impact_wb_5fold_shift(file_path=file_path,
                 n_runs=n_runs, 
                 verbose=verbose, 
                 # scenario=scenario,
                 epsilons=epsilons, 
+                shifts = shifts, 
                 train_params=train_params, 
                 # train_adversary_params=train_adversary_params, 
                 logger_name = logger_name,

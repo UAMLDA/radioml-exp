@@ -24,7 +24,7 @@ train_params = {'type': 'vtcnn2',
                 'verbose': verbose, 
                 'NHWC': [220000, 2, 128, 1],
                 'tpu': False, 
-                'file_path': 'weight_path'}
+                'file_path': weight_path}
 # name for the logger     
 logger_name = 'vtcnn2_FGSM_wb_1fold_shift%s'%(shifts)
 # output path
