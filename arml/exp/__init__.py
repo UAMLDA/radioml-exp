@@ -21,12 +21,16 @@
 
 from .exp_basic import experiment_basic_radioml as exp_basic
 from .exp_fgsm_impact import experiment_fgsm as exp_fgsm_impact
+from .exp_deepfool_impact import experiment_deepfool as exp_deepfool_impact
+from .exp_pgd_impact import experiment_pgd as exp_pgd_impact
 from .exp_multiple_attack import experiment_adversarial as exp_multiple_attack
 from .exp_single_attack import experiment_single_adversarial as exp_single_attack
 
 __all__ = [
     'exp_basic', 
-    'exp_fgsm_impact', 
+    'exp_fgsm_impact',
+    'exp_deepfool_impact',
+    'exp_pgd_impact',
     'exp_multiple_attack', 
     'exp_single_attack'
 ]
